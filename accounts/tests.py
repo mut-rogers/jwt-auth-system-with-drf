@@ -1,5 +1,6 @@
 from rest_framework.test import APIClient, APITestCase 
-from rest_framework_simplejwt import views as jwt_views
+from rest_framework_simplejwt import views as jwt_views 
+from rest_framework import status
 from django.contrib.auth.models import User 
 from django.urls import resolve, reverse 
 from .views import UserRegistrationAPIView 
@@ -30,7 +31,7 @@ class AuthSystemTestCase(APITestCase):
         --> response status = 201
         --> username in the used credentials is similar to username of the retrieved user
         """ 
-        self.assertEqual(self.response.status_code, 201) 
+        self.assertEqual(self.response.status_code, status.HTTP_201_CREATED) 
         self.assertEqual(self.credentials.get("username"), self.user.username)
         self.assertEqual(self.credentials.get("email"), self.user.email)
 
@@ -42,7 +43,7 @@ class AuthSystemTestCase(APITestCase):
         """ 
         register_info = {}
         response = self.client.post(self.register_url, register_info)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_successful_login_contains_access_and_refresh_token(self) -> None:
         """ 
@@ -69,7 +70,7 @@ class AuthSystemTestCase(APITestCase):
             "password": "bad-password"
         }
         bad_response = self.client.post(self.login_url, data=bad_credentials)
-        self.assertEqual(bad_response.status_code, 401) 
+        self.assertEqual(bad_response.status_code, status.HTTP_401_UNAUTHORIZED) 
 
     def test_register_url_resolves_correct_view(self) -> None:
         """  
