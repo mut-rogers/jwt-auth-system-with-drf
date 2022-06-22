@@ -71,7 +71,7 @@ class AuthSystemTestCase(APITestCase):
         bad_response = self.client.post(self.login_url, data=bad_credentials)
         self.assertEqual(bad_response.status_code, 401) 
 
-    def test_register_url_resolves_correct_view(self):
+    def test_register_url_resolves_correct_view(self) -> None:
         """  
         This test checks if the register url resolves/users the correct register view 
         Expected behavior;
@@ -80,7 +80,7 @@ class AuthSystemTestCase(APITestCase):
         view = resolve(self.register_url) 
         self.assertEqual(view.func.view_class, UserRegistrationAPIView)
 
-    def test_login_url_resolves_correct_view(self):
+    def test_login_url_resolves_correct_view(self) -> None:
         """
         This test checks if the login url resolves/uses the correct login view from jwt_views 
         Expected bevhavior;
