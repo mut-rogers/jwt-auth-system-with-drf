@@ -17,10 +17,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             # Ensure email is required and unique
             "email": {
                 "required": True,
-                "validators": validators.UniqueValidator(
-                    User.objects.all(),
-                    message="A user with that email already exists"
-                )
+                "validators": [
+                    validators.UniqueValidator(
+                        User.objects.all(),
+                        message="A user with that email already exists",
+                    )
+                ]
             }
         }
 
