@@ -30,6 +30,10 @@ INSTALLED_APPS = [
 
     # Local Apps
     "accounts.apps.AccountsConfig",
+
+    # Third Party Apps
+    "rest_framework",
+    "rest_framework_simplejwt",
 ]
 
 MIDDLEWARE = [
