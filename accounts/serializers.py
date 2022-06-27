@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User 
+from django.contrib.auth.models import User
 from rest_framework import serializers, validators
 
 
@@ -6,9 +6,10 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     """
     This model serializers is used to Register/Update users 
     """
-    class Meta: 
-        model = User 
-        fields = ["email", "username", "password"] 
+
+    class Meta:
+        model = User
+        fields = ["email", "username", "password"]
         extra_kwargs = {
             "password": {
                 "write_only": True
@@ -31,7 +32,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         Extra checking to ensure everything works well
         """
         password = validated_data.pop("password")
-        instance = self.Meta.model(**validated_data) 
+        instance = self.Meta.model(**validated_data)
         if password is not None:
             instance.set_password(password)
         instance.save()
