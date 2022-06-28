@@ -9,5 +9,4 @@ class PostListCreateAPIView(views.APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request: Request) -> Response:
-        print(self.request.META)
         return Response({"info": "Hello World"})
