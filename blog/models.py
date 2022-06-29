@@ -17,14 +17,14 @@ class Post(models.Model):
         on_delete=models.CASCADE,
         blank=True,
         null=True,
-        related_query_name="posts"
+        related_name="posts"
     )
     topic = models.ForeignKey(
         Topic,
         on_delete=models.CASCADE,
         blank=True,
         null=True,
-        related_query_name="posts"
+        related_name="posts"
     )
     date_created = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=255, blank=True, null=True)
