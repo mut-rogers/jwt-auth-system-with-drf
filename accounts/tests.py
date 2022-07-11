@@ -21,8 +21,13 @@ class AuthSystemTestCase(APITestCase):
         self.client = APIClient()
         self.register_url = reverse("register") 
         self.login_url = reverse("login")
+        self.refresh_url = reverse("refresh")
         self.response = self.client.post(self.register_url, self.credentials)
         self.user = User.objects.get(pk=1)
+        self.login_info = {
+            "username": self.credentials.get("username"),
+            "password": self.credentials.get("password")
+        }
 
     def test_user_was_created(self) -> None: 
         """
@@ -50,14 +55,11 @@ class AuthSystemTestCase(APITestCase):
         This test checks if response from a successful login contains both access and refresh tokens
         Expected behavior;
         --> response contains access and refresh tokens
-        """ 
-        login_info = {
-            "username": self.credentials.get("username"),
-            "password": self.credentials.get("password")
-        }
-        login_response = self.client.post(self.login_url, data=login_info) 
+        """
+        login_response = self.client.post(self.login_url, data=self.login_info)
         self.assertTrue("access" in login_response.json().keys()) 
         self.assertTrue("refresh" in login_response.json().keys())
+        self.assertIn("refresh", login_response.data)
 
     def test_bad_login_credentials_returns_401_not_authorized(self) -> None:
         """ 
@@ -70,7 +72,20 @@ class AuthSystemTestCase(APITestCase):
             "password": "bad-password"
         }
         bad_response = self.client.post(self.login_url, data=bad_credentials)
-        self.assertEqual(bad_response.status_code, status.HTTP_401_UNAUTHORIZED) 
+        self.assertEqual(bad_response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_token_refresh(self) -> None:
+        """
+        Testing if an expired token will be refreshed
+        :return:
+        """
+        login_response = self.client.post(self.login_url, data=self.login_info)
+        refresh_data = {
+            "refresh": login_response.data.get("refresh")
+        }
+        refresh_response = self.client.post(self.refresh_url, data=refresh_data)
+        self.assertIn("access", refresh_response.data)
+        self.assertIn("refresh", refresh_response.data)
 
     def test_register_url_resolves_correct_view(self) -> None:
         """  
