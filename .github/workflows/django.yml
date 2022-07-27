@@ -10,6 +10,9 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    env:
+        SECRET_KEY: p*tsw(bh*x(f*1-#*@c^3sl^1l1g!cwe!)o5_p9k186vkmighi
+        DEBUG: True
     strategy:
       max-parallel: 4
       matrix:
