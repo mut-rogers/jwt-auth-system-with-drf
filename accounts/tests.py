@@ -57,8 +57,7 @@ class AuthSystemTestCase(APITestCase):
         --> response contains access and refresh tokens
         """
         login_response = self.client.post(self.login_url, data=self.login_info)
-        self.assertTrue("access" in login_response.json().keys()) 
-        self.assertTrue("refresh" in login_response.json().keys())
+        self.assertIn("access", login_response.data)
         self.assertIn("refresh", login_response.data)
 
     def test_bad_login_credentials_returns_401_not_authorized(self) -> None:
