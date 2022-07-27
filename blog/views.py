@@ -1,8 +1,11 @@
+from django.db.models import QuerySet
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import status, permissions, generics, views
 from . import serializers
 from . import models
+from rest_framework.decorators import action
+from . import permissions as custom_permissions
 
 
 class PostListCreateAPIView(generics.ListCreateAPIView):
@@ -23,6 +26,16 @@ class PostListCreateAPIView(generics.ListCreateAPIView):
         """
         serializer = serializer.save(author=self.request.user)
         return serializer
+
+
+class PostRetrieveDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    This view retrieves, updates, and deletes Post objects.
+    Users only delete objects they have created
+    """
+    permissions = [custom_permissions.IsAuthorOrReadOnly, permissions.IsAuthenticatedOrReadOnly]
+    serializer_class = serializers.PostSerializer
+    queryset = models.Post.objects.all()
 
 
 class TopicListCreateAPIView(generics.ListCreateAPIView):
