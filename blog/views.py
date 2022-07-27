@@ -1,14 +1,11 @@
-from django.db.models import QuerySet
-from rest_framework.response import Response
-from rest_framework.request import Request
-from rest_framework import status, permissions, generics, views
-from . import serializers
+from rest_framework import permissions, generics, mixins
+
 from . import models
-from rest_framework.decorators import action
 from . import permissions as custom_permissions
+from . import serializers
 
 
-class PostListCreateAPIView(generics.ListCreateAPIView):
+class PostListCreateAPIView(mixins.ListModelMixin, mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
     """
     This view returns a list of all blogs objects.
     Facilitate creations of new blog objects.
@@ -16,26 +13,24 @@ class PostListCreateAPIView(generics.ListCreateAPIView):
 
     Only authenticated users can make POST requests / Creating new Posts objects
     """
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, ]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, custom_permissions.IsAuthorOrReadOnly]
     serializer_class = serializers.PostSerializer 
     queryset = models.Post.objects.all() 
 
-    def perform_create(self, serializer):
-        """
-        Associating a Post object with logged in user
-        """
-        serializer = serializer.save(author=self.request.user)
-        return serializer
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
 
-class PostDestroyAPIView(generics.DestroyAPIView):
-    """
-    This view retrieves, updates, and deletes Post objects.
-    Users only delete objects they have created
-    """
-    permission_classes = [custom_permissions.IsAuthorOrReadOnly, permissions.IsAuthenticatedOrReadOnly]
-    serializer_class = serializers.PostSerializer
-    queryset = models.Post.objects.all()
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
 
 
 class TopicListCreateAPIView(generics.ListCreateAPIView):
