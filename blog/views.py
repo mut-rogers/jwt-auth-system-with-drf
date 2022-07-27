@@ -28,12 +28,12 @@ class PostListCreateAPIView(generics.ListCreateAPIView):
         return serializer
 
 
-class PostRetrieveDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+class PostDestroyAPIView(generics.DestroyAPIView):
     """
     This view retrieves, updates, and deletes Post objects.
     Users only delete objects they have created
     """
-    permissions = [custom_permissions.IsAuthorOrReadOnly, permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [custom_permissions.IsAuthorOrReadOnly, permissions.IsAuthenticatedOrReadOnly]
     serializer_class = serializers.PostSerializer
     queryset = models.Post.objects.all()
 
