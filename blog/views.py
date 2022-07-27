@@ -5,7 +5,9 @@ from . import permissions as custom_permissions
 from . import serializers
 
 
-class PostListCreateAPIView(mixins.ListModelMixin, mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+class BlogListCreateAPIView(mixins.ListModelMixin,
+                            mixins.CreateModelMixin,
+                            generics.GenericAPIView):
     """
     This view returns a list of all blogs objects.
     Facilitate creations of new blog objects.
@@ -14,8 +16,8 @@ class PostListCreateAPIView(mixins.ListModelMixin, mixins.CreateModelMixin, mixi
     Only authenticated users can make POST requests / Creating new Posts objects
     """
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, custom_permissions.IsAuthorOrReadOnly]
-    serializer_class = serializers.PostSerializer 
-    queryset = models.Post.objects.all() 
+    serializer_class = serializers.PostSerializer
+    queryset = models.Post.objects.all()
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
@@ -23,14 +25,19 @@ class PostListCreateAPIView(mixins.ListModelMixin, mixins.CreateModelMixin, mixi
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
 
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
+    def perform_create(self, serializer):
+        serializer = serializer.save(author=self.request.user)  # Associate new blog posts with authenticated user
+        return serializer
 
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
 
-    def patch(self, request, *args, **kwargs):
-        return self.partial_update(request, *args, **kwargs)
+class BlogRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    The view is used to retrieve, update, or delete Blog objects.
+    Only Blog authors can perform update and delete actions
+    """
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, custom_permissions.IsAuthorOrReadOnly]
+    serializer_class = serializers.PostSerializer
+    queryset = models.Post.objects.all()
 
 
 class TopicListCreateAPIView(generics.ListCreateAPIView):
@@ -41,5 +48,5 @@ class TopicListCreateAPIView(generics.ListCreateAPIView):
     Only Authenticated Users can make POST requests / Creating new Topic objects
     """
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, ]
-    serializer_class = serializers.TopicSerializer 
+    serializer_class = serializers.TopicSerializer
     queryset = models.Topic.objects.all()

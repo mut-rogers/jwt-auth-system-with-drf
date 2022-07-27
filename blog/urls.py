@@ -3,6 +3,7 @@ from . import views
 
 
 urlpatterns = [
-    path("<int:pk>/", views.PostListCreateAPIView.as_view(), name="posts"),
+    path("", views.BlogListCreateAPIView.as_view(), name="blogs"),
+    path("<int:pk>/", views.BlogRetrieveUpdateDestroyAPIView.as_view(), name="blog-update"),
     path("topics/", views.TopicListCreateAPIView.as_view(), name="topics"),
 ]
