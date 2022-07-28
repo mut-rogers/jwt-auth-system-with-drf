@@ -10,12 +10,6 @@ class TopicListCreateAPIViewTestCase(base_setup.BaseTestSetUp, APITestCase):
     def setUp(self) -> None:
         super().setUp()
 
-        # Creating a new topic
-        self.new_topic_data = {
-            "topic_name": "Web Development",
-        }
-        self.new_topic_response = self.client.post(self.topics_url, data=self.new_topic_data)
-
     def test_new_topic_was_created(self) -> None:
         """
         Checks if a new topic was created
@@ -27,6 +21,17 @@ class TopicListCreateAPIViewTestCase(base_setup.BaseTestSetUp, APITestCase):
         resp = self.client.get(self.topics_url)
         self.assertEqual(len(resp.data), 1)
         self.assertEqual(resp.data[0].get("topic_name"), self.new_topic_data.get("topic_name"))
+
+    def test_topic_not_created_with_bad_data(self) -> None:
+        """
+        Tests if a new topic will be created with mission data attributes
+        Expected;
+        --> response status code = 400 BAD REQUEST
+        :return:
+        """
+        bad_data = {}
+        bad_response = self.client.post(self.topics_url, data=bad_data)
+        self.assertEqual(bad_response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_topics_url_resolves_correct_view(self) -> None:
         """

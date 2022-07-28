@@ -23,3 +23,9 @@ class BaseTestSetUp(APITestCase):
         self.login_response = self.client.post(self.login_url, data={"username": self.registration_data.get("username"),
                                                "password": self.registration_data.get("password")})
         self.client.credentials(HTTP_AUTHORIZATION="Bearer {}".format(self.login_response.data.get("access")))
+
+        # Creating a new topic
+        self.new_topic_data = {
+            "topic_name": "Web Development",
+        }
+        self.new_topic_response = self.client.post(self.topics_url, data=self.new_topic_data)

@@ -1,5 +1,4 @@
 from rest_framework import permissions, generics, mixins
-
 from . import models
 from . import permissions as custom_permissions
 from . import serializers
@@ -10,9 +9,8 @@ class BlogListCreateAPIView(mixins.ListModelMixin,
                             generics.GenericAPIView):
     """
     This view returns a list of all blogs objects.
-    Facilitate creations of new blog objects.
-    Methods --> GET, POST 
-
+    Facilitate creation of new blog objects.
+    Methods --> GET, POST
     Only authenticated users can make POST requests / Creating new Posts objects
     """
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, custom_permissions.IsAuthorOrReadOnly]
@@ -26,7 +24,7 @@ class BlogListCreateAPIView(mixins.ListModelMixin,
         return self.create(request, *args, **kwargs)
 
     def perform_create(self, serializer):
-        serializer = serializer.save(author=self.request.user)  # Associate new blog posts with authenticated user
+        serializer = serializer.save(author=self.request.user)
         return serializer
 
 
