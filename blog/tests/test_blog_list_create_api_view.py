@@ -12,12 +12,6 @@ class BlogListCreateAPIViewTestCase(base_setup.BaseTestSetUp, APITestCase):
     def setUp(self) -> None:
         super().setUp()
 
-        # Creating a new topic
-        self.new_topic_data = {
-            "topic_name": "Web Development",
-        }
-        self.client.post(self.topics_url, data=self.new_topic_data)
-
         # Creating a new blog post
         self.new_blog_data = {
             "topic": 1,
