@@ -9,8 +9,7 @@ from .views import UserRegistrationAPIView
 class AuthSystemTestCase(APITestCase):
     """
     This TestCase is used to test Login/Register functionality
-    """ 
-
+    """
     def setUp(self) -> None:
         self.credentials = {
             "username": "james",
