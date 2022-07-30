@@ -40,7 +40,7 @@ class AuthSystemTestCase(APITestCase):
         self.assertEqual(self.credentials.get("username"), self.user.username)
         self.assertEqual(self.credentials.get("email"), self.user.email)
 
-    def test_user_was_not_created(self) -> None: 
+    def test_user_not_created_with_bad_credentials(self) -> None:
         """ 
         This test checks if the user will be created when required fields are not entered
         Expected behavior;
@@ -76,7 +76,6 @@ class AuthSystemTestCase(APITestCase):
     def test_token_refresh(self) -> None:
         """
         Testing if an expired token will be refreshed
-        :return:
         """
         login_response = self.client.post(self.login_url, data=self.login_info)
         refresh_data = {
