@@ -30,4 +30,5 @@ jobs:
         pip install -r requirements.txt
     - name: Run Tests
       run: |
-        python manage.py test
+        python manage.py test accounts 
+        python manage.py test blog
